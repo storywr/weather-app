@@ -7,20 +7,14 @@ export function App() {
     enabled: search.length > 4,
     queryKey: ['currentWeatherByCity', search],
     queryFn: async () => {
-      const cityResponse = await fetch(
-        `http://api.openweathermap.org/geo/1.0/zip?zip=${search},US&appid=${
-          import.meta.env.VITE_WEATHER_KEY
-        }`
-      );
-      const cityData = await cityResponse.json();
-      console.log({ cityData });
-      const weather = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${
-          cityData?.lat
-        }&lon=${cityData?.lon}&appid=${import.meta.env.VITE_WEATHER_KEY}`
-      );
-      const weatherData = await weather.json();
-      return weatherData;
+      const data = await fetch(`/api/weather`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({ search }),
+      });
+      return data;
     },
   });
 
