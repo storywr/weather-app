@@ -13,7 +13,7 @@ export class WeatherService {
     let cityData;
     if (isZip) {
       const response = await fetch(
-        `http://api.openweathermap.org/geo/1.0/zip?zip=${search},US&appid=${this.configService.get<string>(
+        `http://api.openweathermap.org/geo/1.0/zip?zip=${search},US&limit=5&appid=${this.configService.get<string>(
           'VITE_WEATHER_KEY'
         )}`
       );
@@ -21,13 +21,13 @@ export class WeatherService {
       console.log({ city: cityData });
     } else {
       const response = await fetch(
-        `http://api.openweathermap.org/geo/1.0/direct?q=${search},US&appid=${this.configService.get<string>(
+        `http://api.openweathermap.org/geo/1.0/direct?q=${search},US&limit=5&appid=${this.configService.get<string>(
           'VITE_WEATHER_KEY'
         )}`
       );
       const cities = await response.json();
       console.log({ cities });
-      cityData = head(cities);
+      cityData = cities;
     }
 
     return cityData;
