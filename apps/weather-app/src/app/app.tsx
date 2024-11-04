@@ -66,28 +66,33 @@ export function App() {
 
   return (
     <div className="p-8 flex flex-col gap-48 h-full w-full">
-      <div className="w-80 m-auto">
-        <label className="input input-bordered flex items-center gap-2">
-          <input
-            className="grow"
-            type="text"
-            placeholder="Search City or Zip Code"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-            className="h-4 w-4 opacity-70"
-          >
-            <path
-              fillRule="evenodd"
-              d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-              clipRule="evenodd"
+      <div className="w-96 m-auto">
+        <div className="flex flex-row gap-8">
+          <label className="input input-bordered flex items-center gap-2">
+            <input
+              className="w-64"
+              type="text"
+              placeholder="Search City or Zip Code"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
-          </svg>
-        </label>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              className="h-4 w-4 opacity-70"
+            >
+              <path
+                fillRule="evenodd"
+                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </label>
+          {isLoadingCity && (
+            <span className="loading loading-spinner loading-md"></span>
+          )}
+        </div>
         {!isEmpty(search) && (cityData?.length ?? 0) > 0 && (
           <ul className="menu bg-base-200 rounded-box w-80 fixed z-50">
             {cityData?.map((city) => (
@@ -106,8 +111,8 @@ export function App() {
           </ul>
         )}
       </div>
-      <div>
-        {!isNil(selectedCity) && (
+      {!isNil(selectedCity) && (
+        <div className="flex flex-row gap-8">
           <div className="card bg-base-300 min-w-80 w-fit shadow-xl">
             <div className="card-body">
               <h2 className="card-title flex flex-col justify-start items-start">
@@ -116,7 +121,7 @@ export function App() {
                   {getDateTime(weatherData?.timezone ?? 0)}
                 </div>
               </h2>
-              <div className="divider my-2" />
+              <div className="divider divider-neutral my-2" />
               <div className="flex flex-row justify-between">
                 <div>
                   <div className="stat-title">
@@ -124,7 +129,7 @@ export function App() {
                       toLower(head(weatherData?.weather)?.description)
                     )}
                   </div>
-                  <div className="stat-value">
+                  <div className="stat-value text-info">
                     {Math.round(weatherData?.main?.temp)}&#8457;
                   </div>
                   <div className="stat-desc">
@@ -160,8 +165,10 @@ export function App() {
               </div>
             </div>
           </div>
-        )}
-      </div>
+          <div className="divider divider-horizontal divider-neutral" />
+          test
+        </div>
+      )}
     </div>
   );
 }
