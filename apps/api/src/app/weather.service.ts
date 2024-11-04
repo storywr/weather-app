@@ -18,7 +18,6 @@ export class WeatherService {
         )}`
       );
       cityData = await response.json();
-      console.log({ city: cityData });
     } else {
       const response = await fetch(
         `http://api.openweathermap.org/geo/1.0/direct?q=${search},US&limit=5&appid=${this.configService.get<string>(
