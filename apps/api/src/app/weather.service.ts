@@ -26,7 +26,6 @@ export class WeatherService {
         )}`
       );
       const cities = await response.json();
-      console.log({ cities });
       cityData = cities;
     }
 
@@ -35,7 +34,7 @@ export class WeatherService {
 
   async getWeather(lat: string, lon: string): Promise<{ data: any }> {
     const weather = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${this.configService.get<string>(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${this.configService.get<string>(
         'VITE_WEATHER_KEY'
       )}`
     );
