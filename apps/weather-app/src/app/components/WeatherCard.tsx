@@ -16,7 +16,7 @@ const WeatherCard = ({
   isCurrent = false,
 }: WeatherCardProps) => {
   return (
-    <div className="card bg-base-300 min-w-96 max-h-fit w-fit shadow-xl">
+    <div className="card bg-base-300 min-w-fit max-h-fit w-fit shadow-xl">
       <div className="card-body">
         <h2 className="card-title flex flex-col justify-start items-start">
           {selectedCity.name}, {selectedCity.state ?? selectedCity.zip}
