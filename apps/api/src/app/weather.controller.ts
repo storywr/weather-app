@@ -5,8 +5,14 @@ import { WeatherService } from './weather.service';
 export class WeatherController {
   constructor(private readonly weatherService: WeatherService) {}
 
-  @Post()
-  async getData(@Body('search') search: string): Promise<any> {
-    return this.weatherService.getData(search);
+  @Post('cities')
+  async getCities(@Body('search') search: string): Promise<any> {
+    return this.weatherService.getCoordinates(search);
+  }
+
+  @Post('conditions')
+  async getWeather(@Body() body: any): Promise<any> {
+    const { lat, lon } = body;
+    return this.weatherService.getWeather(lat, lon);
   }
 }

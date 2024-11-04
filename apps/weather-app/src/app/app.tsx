@@ -1,34 +1,64 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import isNil from 'lodash/isNil';
+import head from 'lodash/head';
 
 export function App() {
   const [search, setSearch] = useState('');
-  const result = useQuery({
-    enabled: search.length > 4,
-    queryKey: ['currentWeatherByCity', search],
+  const { data: cityData } = useQuery({
+    queryKey: ['currentCity', search],
     queryFn: async () => {
-      const data = await fetch(`/api/weather`, {
+      const response = await fetch(`/api/weather/cities`, {
         headers: {
           'Content-Type': 'application/json',
         },
         method: 'POST',
         body: JSON.stringify({ search }),
       });
-      return data;
+      const result = response.json();
+      return result;
     },
   });
 
-  console.log({ result });
+  const { data: weatherData } = useQuery({
+    enabled: !isNil(cityData),
+    queryKey: ['currentConditions', search],
+    queryFn: async () => {
+      let latCoordinates;
+      let lonCoordinates;
+      if (Array.isArray(cityData)) {
+        const { lat, lon } = head(cityData);
+        latCoordinates = lat;
+        lonCoordinates = lon;
+      } else {
+        latCoordinates = cityData.lat;
+        lonCoordinates = cityData.lon;
+      }
+      const response = await fetch(`/api/weather/conditions`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({ lat: latCoordinates, lon: lonCoordinates }),
+      });
+      const result = response.json();
+      return result;
+    },
+  });
+
+  console.log({ weatherData });
 
   return (
     <div className="p-10">
-      <input
-        className="input input-bordered"
-        type="text"
-        placeholder="Type Zip"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      <div className="w-72">
+        <input
+          className="input input-bordered w-full"
+          type="text"
+          placeholder="Search City or Zip Code"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
     </div>
   );
 }
