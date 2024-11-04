@@ -31,7 +31,7 @@ export class WeatherService {
     return cityData;
   }
 
-  async getWeather(lat: string, lon: string): Promise<{ data: WeatherData }> {
+  async getWeather(lat: number, lon: number): Promise<{ data: WeatherData }> {
     const weather = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${this.configService.get<string>(
         'VITE_WEATHER_KEY'
@@ -43,8 +43,8 @@ export class WeatherService {
   }
 
   async getForecast(
-    lat: string,
-    lon: string
+    lat: number,
+    lon: number
   ): Promise<{ data: { list: WeatherData[] } }> {
     const weather = await fetch(
       `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&cnt=40&appid=${this.configService.get<string>(
