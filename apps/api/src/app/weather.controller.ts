@@ -10,9 +10,15 @@ export class WeatherController {
     return this.weatherService.getCoordinates(search);
   }
 
-  @Post('conditions')
+  @Post('current')
   async getWeather(@Body() body: any): Promise<any> {
     const { lat, lon } = body;
     return this.weatherService.getWeather(lat, lon);
+  }
+
+  @Post('forecast')
+  async getForecast(@Body() body: any): Promise<any> {
+    const { lat, lon } = body;
+    return this.weatherService.getForecast(lat, lon);
   }
 }

@@ -1,23 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import isNil from 'lodash/isNil';
-import head from 'lodash/head';
 import isEmpty from 'lodash/isEmpty';
 import { useDebounce } from '@uidotdev/usehooks';
-import startCase from 'lodash/startCase';
-import toLower from 'lodash/toLower';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-
-dayjs.extend(utc);
-
-const getDateTime = (offset: number, short = false) => {
-  const time = dayjs
-    .utc()
-    .utcOffset(offset / 60)
-    .format(short ? 'h:mm A' : 'ddd MMM D, h:mm A');
-  return time;
-};
+import WeatherCard from './components/WeatherCard';
 
 export function App() {
   const [search, setSearch] = useState('');
@@ -43,11 +29,11 @@ export function App() {
     },
   });
 
-  const { data: weatherData, isLoading: isLoadingWeather } = useQuery({
+  const { data: weatherData } = useQuery({
     enabled: !isNil(selectedCity),
     queryKey: ['currentConditions', selectedCity],
     queryFn: async () => {
-      const response = await fetch(`/api/weather/conditions`, {
+      const response = await fetch(`/api/weather/current`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -62,10 +48,27 @@ export function App() {
     },
   });
 
-  console.log({ weatherData });
+  const { data: forecastData } = useQuery({
+    enabled: !isNil(selectedCity),
+    queryKey: ['forecast', selectedCity],
+    queryFn: async () => {
+      const response = await fetch(`/api/weather/forecast`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          lat: selectedCity.lat!,
+          lon: selectedCity.lon!,
+        }),
+      });
+      const result = response.json();
+      return result;
+    },
+  });
 
   return (
-    <div className="p-8 flex flex-col gap-48 h-full w-full">
+    <div className="p-8 flex flex-col gap-16 h-full w-full">
       <div className="w-96 m-auto">
         <div className="flex flex-row gap-8">
           <label className="input input-bordered flex items-center gap-2">
@@ -112,61 +115,23 @@ export function App() {
         )}
       </div>
       {!isNil(selectedCity) && (
-        <div className="flex flex-row gap-8">
-          <div className="card bg-base-300 min-w-80 w-fit shadow-xl">
-            <div className="card-body">
-              <h2 className="card-title flex flex-col justify-start items-start">
-                {selectedCity.name}, {selectedCity.state ?? selectedCity.zip}
-                <div className="text-sm font-normal">
-                  {getDateTime(weatherData?.timezone ?? 0)}
-                </div>
-              </h2>
-              <div className="divider divider-neutral my-2" />
-              <div className="flex flex-row justify-between">
-                <div>
-                  <div className="stat-title">
-                    {startCase(
-                      toLower(head(weatherData?.weather)?.description)
-                    )}
-                  </div>
-                  <div className="stat-value text-info">
-                    {Math.round(weatherData?.main?.temp)}&#8457;
-                  </div>
-                  <div className="stat-desc">
-                    Feels Like: {Math.round(weatherData?.main?.feels_like)}
-                    &#8457;
-                  </div>
-                </div>
-                <div className="flex flex-col">
-                  <div className="text-sm">
-                    H: {Math.round(weatherData?.main?.temp_max)}&#8457;
-                  </div>
-                  <div className="text-sm">
-                    L: {Math.round(weatherData?.main?.temp_min)}&#8457;
-                  </div>
-                </div>
+        <div className="flex flex-row gap-2">
+          <WeatherCard
+            weatherData={weatherData}
+            selectedCity={selectedCity}
+            isCurrent
+          />
+          <div className="divider divider-horizontal divider-neutral !h-[332px]" />
+          <div className="carousel rounded-box space-x-2">
+            {forecastData?.list?.map((forecast) => (
+              <div className="carousel-item" key={forecast?.dt}>
+                <WeatherCard
+                  weatherData={forecast}
+                  selectedCity={selectedCity}
+                />
               </div>
-              <div className="card-actions mt-4">
-                <details className="collapse collapse-arrow bg-base-200">
-                  <summary className="collapse-title">Details</summary>
-                  <div className="collapse-content text-sm gap-1 flex flex-col">
-                    <p>
-                      Sunrise:{' '}
-                      {getDateTime(weatherData?.sys?.sunrise ?? 0, true)}
-                    </p>
-                    <p>
-                      Sunset: {getDateTime(weatherData?.sys.sunset ?? 0, true)}
-                    </p>
-                    <p>Humidity: {weatherData?.main?.humidity}%</p>
-                    <p>Cloudiness: {weatherData?.clouds?.all}%</p>
-                    <p>Wind: {weatherData?.wind?.speed} mph</p>
-                  </div>
-                </details>
-              </div>
-            </div>
+            ))}
           </div>
-          <div className="divider divider-horizontal divider-neutral" />
-          test
         </div>
       )}
     </div>

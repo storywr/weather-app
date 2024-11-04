@@ -41,4 +41,15 @@ export class WeatherService {
 
     return weatherData;
   }
+
+  async getForecast(lat: string, lon: string): Promise<{ data: any }> {
+    const weather = await fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&cnt=40&appid=${this.configService.get<string>(
+        'VITE_WEATHER_KEY'
+      )}`
+    );
+    const weatherData = await weather.json();
+
+    return weatherData;
+  }
 }
