@@ -1,68 +1,21 @@
-import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import isNil from 'lodash/isNil';
 import isEmpty from 'lodash/isEmpty';
 import { useDebounce } from '@uidotdev/usehooks';
 import WeatherCard from './components/WeatherCard';
 import SearchIcon from './icons/search';
+import { useGetCurrentConditions, useGetForecast } from './hooks/weather';
+import { useGetCity } from './hooks/city';
+import { City } from 'libs/shared-types';
 
 export function App() {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 300);
-  const [selectedCity, setSelectedCity] = useState<any>(null);
-  const { data: cityData, isLoading: isLoadingCity } = useQuery({
-    enabled: !isEmpty(debouncedSearch),
-    queryKey: ['currentCity', debouncedSearch],
-    queryFn: async () => {
-      const response = await fetch(`/api/weather/cities`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({ search: debouncedSearch }),
-      });
-      const result = await response.json();
-      return [result].flat();
-    },
-  });
-
-  const { data: weatherData } = useQuery({
-    enabled: !isNil(selectedCity),
-    queryKey: ['currentConditions', selectedCity],
-    queryFn: async () => {
-      const response = await fetch(`/api/weather/current`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          lat: selectedCity.lat!,
-          lon: selectedCity.lon!,
-        }),
-      });
-      const result = response.json();
-      return result;
-    },
-  });
-
-  const { data: forecastData } = useQuery({
-    enabled: !isNil(selectedCity),
-    queryKey: ['forecast', selectedCity],
-    queryFn: async () => {
-      const response = await fetch(`/api/weather/forecast`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          lat: selectedCity.lat!,
-          lon: selectedCity.lon!,
-        }),
-      });
-      const result = response.json();
-      return result;
-    },
-  });
+  const [selectedCity, setSelectedCity] = useState<City | undefined>(undefined);
+  const { data: cityData, isLoading: isLoadingCity } =
+    useGetCity(debouncedSearch);
+  const { data: weatherData } = useGetCurrentConditions(selectedCity);
+  const { data: forecastData } = useGetForecast(selectedCity);
 
   return (
     <div className="p-8 flex flex-col gap-16 h-full w-full">
@@ -100,7 +53,7 @@ export function App() {
           </ul>
         )}
       </div>
-      {!isNil(selectedCity) && (
+      {!isNil(selectedCity) && !isNil(weatherData) && (
         <div className="flex flex-row gap-2">
           <WeatherCard
             weatherData={weatherData}
@@ -109,7 +62,7 @@ export function App() {
           />
           <div className="divider divider-horizontal divider-neutral !h-[332px]" />
           <div className="carousel rounded-box space-x-2">
-            {forecastData?.list?.map((forecast) => (
+            {forecastData?.map((forecast) => (
               <div className="carousel-item" key={forecast?.dt}>
                 <WeatherCard
                   weatherData={forecast}

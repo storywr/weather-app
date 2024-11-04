@@ -1,9 +1,20 @@
+import { City, WeatherData } from 'libs/shared-types';
 import { getDate, getDateTime } from '../utils/datetime';
 import head from 'lodash/head';
 import startCase from 'lodash/startCase';
 import toLower from 'lodash/toLower';
 
-const WeatherCard = ({ weatherData, selectedCity, isCurrent = false }: any) => {
+type WeatherCardProps = {
+  weatherData: WeatherData;
+  selectedCity: City;
+  isCurrent?: boolean;
+};
+
+const WeatherCard = ({
+  weatherData,
+  selectedCity,
+  isCurrent = false,
+}: WeatherCardProps) => {
   return (
     <div className="card bg-base-300 min-w-96 max-h-fit w-fit shadow-xl">
       <div className="card-body">

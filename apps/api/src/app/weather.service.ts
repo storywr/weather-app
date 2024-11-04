@@ -1,12 +1,12 @@
+import { City, WeatherData } from 'libs/shared-types';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import head from 'lodash/head';
 
 @Injectable()
 export class WeatherService {
   constructor(private configService: ConfigService) {}
 
-  async getCoordinates(search): Promise<{ data: any }> {
+  async getCoordinates(search): Promise<{ data: City }> {
     const zipRegex = /^\d{5}(?:-\d{4})?$/;
     const isZip = zipRegex.test(search);
 
@@ -31,7 +31,7 @@ export class WeatherService {
     return cityData;
   }
 
-  async getWeather(lat: string, lon: string): Promise<{ data: any }> {
+  async getWeather(lat: string, lon: string): Promise<{ data: WeatherData }> {
     const weather = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${this.configService.get<string>(
         'VITE_WEATHER_KEY'
@@ -42,7 +42,10 @@ export class WeatherService {
     return weatherData;
   }
 
-  async getForecast(lat: string, lon: string): Promise<{ data: any }> {
+  async getForecast(
+    lat: string,
+    lon: string
+  ): Promise<{ data: { list: WeatherData[] } }> {
     const weather = await fetch(
       `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&cnt=40&appid=${this.configService.get<string>(
         'VITE_WEATHER_KEY'
