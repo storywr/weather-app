@@ -43,4 +43,4 @@ Thumbs.db
 
 vite.config.*.timestamp*
 
-.env
+*.env
