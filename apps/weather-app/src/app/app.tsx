@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import isNil from 'lodash/isNil';
 import { useDebounce } from '@uidotdev/usehooks';
-import WeatherCard from './components/WeatherCard';
 import { useGetCurrentConditions, useGetForecast } from './hooks/weather';
 import { useGetCity } from './hooks/city';
 import { City } from 'libs/shared-types';
 import LoadingCarousel from './components/LoadingCarousel';
 import Nav from './components/Nav';
+import Forecast from './components/Forecast';
 
 export function App() {
   const [search, setSearch] = useState('');
@@ -29,6 +29,7 @@ export function App() {
   } = useGetForecast(selectedCity);
 
   const isLoading = isLoadingWeather || isLoadingForecast;
+  const isForecast = !isNil(selectedCity) && !isNil(weatherData) && !isLoading;
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -52,25 +53,12 @@ export function App() {
         isErrorWeather={isErrorWeather}
       />
       {isLoading && <LoadingCarousel />}
-      {!isNil(selectedCity) && !isNil(weatherData) && !isLoading && (
-        <div className="flex flex-row gap-2">
-          <WeatherCard
-            weatherData={weatherData}
-            selectedCity={selectedCity}
-            isCurrent
-          />
-          <div className="divider divider-horizontal divider-neutral !h-[332px]" />
-          <div className="carousel rounded-box space-x-2">
-            {forecastData?.map((forecast) => (
-              <div className="carousel-item" key={forecast?.dt}>
-                <WeatherCard
-                  weatherData={forecast}
-                  selectedCity={selectedCity}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+      {isForecast && (
+        <Forecast
+          weatherData={weatherData}
+          selectedCity={selectedCity}
+          forecastData={forecastData}
+        />
       )}
     </div>
   );
