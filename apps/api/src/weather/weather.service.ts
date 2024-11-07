@@ -1,6 +1,6 @@
-import { City, WeatherData } from 'libs/shared-types';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { CityDTO, WeatherDataDTO } from './dtos';
 
 @Injectable()
 export class WeatherService {
@@ -15,7 +15,7 @@ export class WeatherService {
     return data;
   };
 
-  async getCoordinates(search): Promise<{ data: City }> {
+  async getCoordinates(search): Promise<{ data: CityDTO }> {
     const zipRegex = /^\d{5}(?:-\d{4})?$/;
     const isZip = zipRegex.test(search);
     const cityData = await this.fetchData(
@@ -26,7 +26,10 @@ export class WeatherService {
     return cityData;
   }
 
-  async getWeather(lat: number, lon: number): Promise<{ data: WeatherData }> {
+  async getWeather(
+    lat: number,
+    lon: number
+  ): Promise<{ data: WeatherDataDTO }> {
     const data = await this.fetchData(
       `data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${this.appId}`
     );
@@ -36,7 +39,7 @@ export class WeatherService {
   async getForecast(
     lat: number,
     lon: number
-  ): Promise<{ data: { list: WeatherData[] } }> {
+  ): Promise<{ data: { list: WeatherDataDTO[] } }> {
     const data = await this.fetchData(
       `data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&cnt=40&appid=${this.appId}`
     );
