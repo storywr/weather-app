@@ -1,11 +1,11 @@
 import { UseQueryResult, useQuery } from '@tanstack/react-query';
-import { City, WeatherData } from 'libs/shared-types';
+import { CityDTO, WeatherDataDTO } from 'libs/dtos';
 import isNil from 'lodash/isNil';
 
 export function useGetCurrentConditions(
-  selectedCity?: City
-): UseQueryResult<WeatherData, Error> {
-  return useQuery<WeatherData, Error>({
+  selectedCity?: CityDTO
+): UseQueryResult<WeatherDataDTO, Error> {
+  return useQuery<WeatherDataDTO, Error>({
     enabled: !isNil(selectedCity),
     queryKey: ['currentConditions', selectedCity],
     queryFn: async () => {
@@ -26,9 +26,9 @@ export function useGetCurrentConditions(
 }
 
 export function useGetForecast(
-  selectedCity?: City
-): UseQueryResult<WeatherData[], Error> {
-  return useQuery<WeatherData[], Error>({
+  selectedCity?: CityDTO
+): UseQueryResult<WeatherDataDTO[], Error> {
+  return useQuery<WeatherDataDTO[], Error>({
     enabled: !isNil(selectedCity),
     queryKey: ['forecast', selectedCity],
     queryFn: async () => {

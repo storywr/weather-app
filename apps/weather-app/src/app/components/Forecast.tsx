@@ -19,7 +19,7 @@ const Forecast = ({
         selectedCity={selectedCity}
         isCurrent
       />
-      <div className="divider divider-horizontal divider-neutral !h-[332px]" />
+      <div className="divider divider-horizontal divider-neutral !h-[352px]" />
       <div className="carousel rounded-box space-x-2 pb-4">
         {forecastData?.map((forecast) => (
           <div className="carousel-item" key={forecast?.dt}>

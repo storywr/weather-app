@@ -1,9 +1,9 @@
 import { UseQueryResult, useQuery } from '@tanstack/react-query';
-import { City } from 'libs/shared-types';
+import { CityDTO } from 'libs/dtos';
 import isEmpty from 'lodash/isEmpty';
 
-export function useGetCity(search: string): UseQueryResult<City[], Error> {
-  return useQuery<City[], Error>({
+export function useGetCity(search: string): UseQueryResult<CityDTO[], Error> {
+  return useQuery<CityDTO[], Error>({
     enabled: !isEmpty(search),
     queryKey: ['currentCity', search],
     queryFn: async () => {
