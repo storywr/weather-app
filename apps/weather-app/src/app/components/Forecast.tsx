@@ -1,10 +1,10 @@
-import { City, WeatherData } from 'libs/shared-types';
+import { CityDTO, WeatherDataDTO } from 'libs/dtos';
 import WeatherCard from './WeatherCard';
 
 type ForecastProps = {
-  weatherData: WeatherData;
-  selectedCity: City;
-  forecastData: WeatherData[] | undefined;
+  weatherData: WeatherDataDTO;
+  selectedCity: CityDTO;
+  forecastData: WeatherDataDTO[] | undefined;
 };
 
 const Forecast = ({

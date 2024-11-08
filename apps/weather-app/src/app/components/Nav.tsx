@@ -3,14 +3,14 @@ import SearchIcon from '../icons/search';
 import ErrorAlert from './ErrorAlert';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { Thunderstorm } from '@mui/icons-material';
-import { City } from 'libs/shared-types';
+import { CityDTO } from 'libs/dtos';
 
 type NavProps = {
   search: string;
   handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSelectCity: (value: City) => void;
+  handleSelectCity: (value: CityDTO) => void;
   isLoadingCity: boolean;
-  cityData: City[] | undefined;
+  cityData: CityDTO[] | undefined;
   isErrorCity: boolean;
   isErrorForecast: boolean;
   isErrorWeather: boolean;

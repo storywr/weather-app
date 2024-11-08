@@ -1,7 +1,12 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { WeatherService } from './weather.service';
 import { ApiResponse } from '@nestjs/swagger';
-import { CityCoordinatesDTO, CityDTO, SearchDTO, WeatherDataDTO } from './dtos';
+import {
+  CityCoordinatesDTO,
+  CityDTO,
+  SearchDTO,
+  WeatherDataDTO,
+} from '../../../../libs/dtos';
 
 @Controller('weather')
 export class WeatherController {

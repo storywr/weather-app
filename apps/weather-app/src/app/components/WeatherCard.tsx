@@ -1,12 +1,12 @@
-import { City, WeatherData } from 'libs/shared-types';
+import { CityDTO, WeatherDataDTO } from 'libs/dtos';
 import { getDate, getDateTime } from '../utils/datetime';
 import head from 'lodash/head';
 import startCase from 'lodash/startCase';
 import toLower from 'lodash/toLower';
 
 type WeatherCardProps = {
-  weatherData: WeatherData;
-  selectedCity: City;
+  weatherData: WeatherDataDTO;
+  selectedCity: CityDTO;
   isCurrent?: boolean;
 };
 

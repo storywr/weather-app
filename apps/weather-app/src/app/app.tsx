@@ -3,7 +3,7 @@ import isNil from 'lodash/isNil';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useGetCurrentConditions, useGetForecast } from './hooks/weather';
 import { useGetCity } from './hooks/city';
-import { City } from 'libs/shared-types';
+import { CityDTO } from 'libs/dtos';
 import LoadingCarousel from './components/LoadingCarousel';
 import Nav from './components/Nav';
 import Forecast from './components/Forecast';
@@ -11,7 +11,9 @@ import Forecast from './components/Forecast';
 export function App() {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 300);
-  const [selectedCity, setSelectedCity] = useState<City | undefined>(undefined);
+  const [selectedCity, setSelectedCity] = useState<CityDTO | undefined>(
+    undefined
+  );
   const {
     data: cityData,
     isLoading: isLoadingCity,
@@ -35,7 +37,7 @@ export function App() {
     setSearch(e.target.value);
   };
 
-  const handleSelectCity = (city: City) => {
+  const handleSelectCity = (city: CityDTO) => {
     setSelectedCity(city);
     setSearch('');
   };
